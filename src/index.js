@@ -27,7 +27,8 @@ function onSearch(event) {
     if (data.length >= 10 && inputValue !== '') {
       refs.countryListField.innerHTML = '';
       Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
-      return;}
+      return;
+    }
     
     else if (data.length >= 2 && data.length < 10) {
       refs.countryInfoField.innerHTML = '';
@@ -37,13 +38,17 @@ function onSearch(event) {
     }
       
     else if (data.length < 2) {
+      refs.countryListField.innerHTML = '';
+      onOneCoutryMarkup(data);
+      const oneCountryMarkup = onOneCoutryMarkup(data);
+      refs.countryInfoField.innerHTML = oneCountryMarkup;
+      return;
+    }
+  }).catch(error => {
+    Notiflix.Notify.failure('Oops, there is no country with that name')
     refs.countryListField.innerHTML = '';
-    onOneCoutryMarkup(data);
-    const oneCountryMarkup = onOneCoutryMarkup(data);
-    refs.countryInfoField.innerHTML = oneCountryMarkup;
-    return;
-    }   
-  });  
+    refs.countryInfoField.innerHTML = '';      
+  });
 
   
 
@@ -63,7 +68,7 @@ function onManyCountryMarkup(data) {
 function onOneCoutryMarkup(data) {
   return data.map(({ name, capital, population, flags, languages }) => {
     return `
-    <div>
+    <div class="container">
       <img src="${flags.svg}" alt="${flags.alt}" width="100" height="60">
       <h1>${name.official}</h1>
     </div>
@@ -72,10 +77,4 @@ function onOneCoutryMarkup(data) {
       <h3>Languages: ${Object.values(languages)} </h3>
   `;
   }).join('');  
-};
-
-
-
-
-
-
+  };
