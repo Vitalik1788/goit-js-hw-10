@@ -1,6 +1,8 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import { fetchCountries } from './js/fetchCountries';
+import onManyCountryMarkup from './js/many-countries';
+import onOneCoutryMarkup from './js/one-contries-markup';
 
 var debounce = require('lodash.debounce');
 
@@ -20,7 +22,7 @@ function onSearch(event) {
   if (inputValue === '') {
     refs.countryListField.innerHTML = '';
     refs.countryInfoField.innerHTML = '';
-    return;  
+    return;
   }
 
   fetchCountries(inputValue).then(data => {
@@ -32,6 +34,7 @@ function onSearch(event) {
     
     else if (data.length >= 2 && data.length < 10) {
       refs.countryInfoField.innerHTML = '';
+      onManyCountryMarkup(data);
       const manyCountryMarkup = onManyCountryMarkup(data);
       refs.countryListField.innerHTML = manyCountryMarkup;
       return;
@@ -47,34 +50,6 @@ function onSearch(event) {
   }).catch(error => {
     Notiflix.Notify.failure('Oops, there is no country with that name')
     refs.countryListField.innerHTML = '';
-    refs.countryInfoField.innerHTML = '';      
+    refs.countryInfoField.innerHTML = '';
   });
-
-  
-
-function onManyCountryMarkup(data) {
-    return data.map(({ name, flags }) => {
-    return `
-      <li class='country-item'>
-      <img src="${flags.svg}" alt="${flags.alt}" width="100" height="60">
-      <h1> ${name.official} </h1>
-      </li>    
-    `;
-  }).join('');
-  
-};
-
-
-function onOneCoutryMarkup(data) {
-  return data.map(({ name, capital, population, flags, languages }) => {
-    return `
-    <div class="container">
-      <img src="${flags.svg}" alt="${flags.alt}" width="100" height="60">
-      <h1>${name.official}</h1>
-    </div>
-      <h3>Capital: ${capital} </h3>
-      <h3>Population: ${population} </h3>
-      <h3>Languages: ${Object.values(languages)} </h3>
-  `;
-  }).join('');  
-  };
+}
